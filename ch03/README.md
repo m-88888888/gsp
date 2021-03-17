@@ -106,4 +106,35 @@ func main() {
 	fmt.Fscan(reader, &i, &f, &g, &s)
 	fmt.Printf("%v, %v, %v, %v", i, f, g, s)
 }
+
+`### パイプ（ストリーム）
+
+io.Readerとio.Writer間のデータが流れるパイプ
+
+```jsx
+// ①引数のReaderすべて繋げる
+func main() {
+	header := bytes.NewBufferString("----- HEADER -----\n")
+	content := bytes.NewBufferString("Example of io.MultiReader\n")
+	footer := bytes.NewBufferString("----- FOOTER -----\n")
+
+	reader := io.MultiReader(header, content, footer)
+	io.Copy(os.Stdout, reader)
+}
+
+// ②writerに書き出したあともreaderに残す
+func main() {
+	var buffer bytes.Buffer
+	reader := bytes.NewBufferString("Example of io.TeeReader\n")
+	teeReader := io.TeeReader(reader, &buffer)
+	_, _ = ioutil.ReadAll(teeReader)
+
+	fmt.Println(buffer.String())
+}
 ```
+
+①と②でも使っている`io.Pipe()`は同期処理なので、ReadとWrite両方が終わらないと次の処理が動かない
+
+bufio.NewWriterなどを使ってバッファリングすることで対処可能
+
+チャネルによる並列処理でも同期処理が走るから、ReadとWriteの並行処理を走らせたい場合はgoroutineを使うこと``
