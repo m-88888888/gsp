@@ -17,11 +17,11 @@ func main() {
 
 	// ここにioパッケージを使ったコード
 	a := io.NewSectionReader(programming, 5, 1)
-	s := io.LimitReader(programming, 1)
+	s := io.LimitReader(system, 1)
 	c := io.LimitReader(computer, 1)
-	i := io.NewSectionReader(programming, 7, 1)
-	i2 := io.NewSectionReader(programming, 7, 1)
+	i := io.NewSectionReader(programming, 8, 1)
+	i2 := io.NewSectionReader(programming, 8, 1)
 
-	stream := io.MultiReader(a, s, c, i, i2)
+	stream = io.MultiReader(a, s, c, i, i2)
 	io.Copy(os.Stdout, stream)
 }
